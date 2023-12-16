@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::io::{self, Write};
 use uuid::Uuid;
 
+/// Represents an item in an order.
 struct OrderItem {
     name: String,
     quantity: u32,
@@ -10,6 +11,7 @@ struct OrderItem {
     timestamp: DateTime<Utc>,
 }
 
+/// Represents an order.
 struct Order {
     id: Uuid,
     items: Vec<OrderItem>,
@@ -21,6 +23,7 @@ struct Order {
 }
 
 impl Order {
+    /// Creates a new order with the given server ID.
     fn new(server_id: u32) -> Self {
         Order {
             id: Uuid::new_v4(),
@@ -33,6 +36,7 @@ impl Order {
         }
     }
 
+    /// Adds an item to the order.
     fn add_item(&mut self, item: &str, quantity: u32, price: f64) {
         let timestamp = Utc::now();
         let order_item = OrderItem {
@@ -46,6 +50,7 @@ impl Order {
         self.order_total = (self.order_total * 100.0).round() / 100.0;
     }
 
+    /// Removes an item from the order at the specified index.
     fn remove_item(&mut self, item_index: usize) {
         if item_index < self.items.len() {
             let removed_item = self.items.remove(item_index);
@@ -55,15 +60,18 @@ impl Order {
         }
     }
 
+    /// Adds a tip to the order.
     fn add_tip(&mut self, tip: f64) {
         self.tip = tip;
     }
 
+    /// Calculates the amount owed for the order.
     fn calculate_amount_owed(&mut self) {
         self.amount_owed = self.order_total + (self.order_total * self.taxes) + self.tip;
         self.amount_owed = (self.amount_owed * 100.0).round() / 100.0;
     }
 
+    /// Displays the order details.
     fn display_order(&self) {
         println!("┌─────────────────────────────────────────────────────────────┐");
         println!("│ Order ID: {}", self.id);
